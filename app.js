@@ -3,17 +3,19 @@ const express = require('express');
 
 // Create an Express app
 const app = express();
-const port = process.env.PORT || 3000;
-const envToken = process.env.VERIFY_TOKEN;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Set port and verify_token
+const port = process.env.PORT || 3000;
+const verifyToken = process.env.VERIFY_TOKEN;
+
 // Route for GET requests
 app.get('/', (req, res) => {
-  const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': hubToken } = req.query;
+  const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': token } = req.query;
 
-  if (mode === 'subscribe' && hubToken === envToken) {
+  if (mode === 'subscribe' && token === verifyToken) {
     console.log('WEBHOOK VERIFIED');
     res.status(200).send(challenge);
   } else {
